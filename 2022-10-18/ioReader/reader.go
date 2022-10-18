@@ -1,7 +1,9 @@
 package main
 
 import (
+	"fmt"
 	"io"
+	"io/ioutil"
 	"log"
 	"strings"
 )
@@ -42,11 +44,47 @@ func (a *AlphFilter) Read(p []byte) (int, error) {
 			continue
 		}
 		buf[n] = char
-		n ++
-		a.cur ++
+		n++
+		a.cur++
 	}
 	copy(p, buf)
 	return n, nil
+}
+
+func ReadFile() {
+	fileName := "go.mod"
+	b, err := ioutil.ReadFile(fileName)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	log.Printf("[内容: %s]", b)
+}
+
+func WriteFile() {
+	fileName := "Daydream.txt"
+	err := ioutil.WriteFile(fileName, []byte("我要成为技术大佬\n老婆孩子热炕头"), 0644)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+}
+
+func ReadDir() {
+	fs, err := ioutil.ReadDir("../")
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	for _, f := range fs {
+		fmt.Printf("[name:%v][size:%v][isDir:%v][mode:%v][ModTimeT%v]\n",
+			f.Name(),	
+			f.Size(),
+			f.IsDir(),
+			f.Mode(),
+			f.ModTime(),
+		)
+	}
 }
 
 // 实现一个reader每次读取4字节
@@ -68,4 +106,7 @@ func main() {
 		}
 		log.Printf("[打印读取的字节数:%d 内容:%s]", n, string(p[:n]))
 	}
+	ReadFile()
+	WriteFile()
+	ReadDir()
 }
